@@ -9,6 +9,10 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\AuthenticationException;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
+use Spatie\Permission\Middleware\RoleMiddleware;
+use Spatie\Permission\Middleware\PermissionMiddleware;
+use Spatie\Permission\Middleware\RoleOrPermissionMiddleware;
+
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__ . '/../routes/web.php',
@@ -24,12 +28,19 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
         $middleware->alias([
             'api.maintenance' => ApiMaintenanceMode::class,
+            'role' => RoleMiddleware::class,
+            'permission' => PermissionMiddleware::class,
+            'role_or_permission' => RoleOrPermissionMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->render(function (Throwable $e, $request) {
 
-            if (! $request->expectsJson()) {
+            if ($request->is('api/*')) {
+                $request->headers->set('Accept', 'application/json');
+            }
+
+            if (! $request->expectsJson() && ! $request->is('api/*')) {
                 return null;
             }
 
@@ -52,7 +63,6 @@ return Application::configure(basePath: dirname(__DIR__))
                 ], 401);
             }
 
-            // Optional: authorization (403)
             if ($e instanceof \Illuminate\Auth\Access\AuthorizationException) {
                 return response()->json([
                     'error' => [
@@ -62,7 +72,6 @@ return Application::configure(basePath: dirname(__DIR__))
                 ], 403);
             }
 
-            // Fallback
             $status = $e instanceof HttpExceptionInterface
                 ? $e->getStatusCode()
                 : 500;

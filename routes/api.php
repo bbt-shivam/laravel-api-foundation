@@ -4,7 +4,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\Api\V1\PermissionController;
 use App\Http\Controllers\Api\V1\ProfileController;
+use App\Http\Controllers\Api\V1\RoleController;
 use App\Http\Controllers\Api\V1\SettingController;
 
 // api versions
@@ -15,7 +17,6 @@ Route::prefix('v1')
 
         // unauthenticated routes
         Route::post('/login', [AuthController::class, 'login']);
-        Route::post('/register', [AuthController::class, 'register']);
 
         //authenticated routes
         Route::middleware('auth:sanctum')->group(function(){
@@ -30,9 +31,15 @@ Route::prefix('v1')
             Route::prefix('admin')
                 ->middleware('role:admin')
                 ->group(function() {
+
+                    Route::apiResource('roles', RoleController::class);
+                    Route::apiResource('permissions', PermissionController::class)->except(['show']);
+
                     Route::get('/users', [AdminUserController::class, 'index']);
                     Route::delete('/users/{id}', [AdminUserController::class, 'destroy']); 
-                });
+            });
+
+
         });
 
     });
