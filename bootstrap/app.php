@@ -4,7 +4,8 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use App\Http\Middleware\ApiMaintenanceMode;
-
+use App\Http\Middleware\EnsureAccountIsActive;
+use App\Http\Middleware\ForcePasswordChange;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\AuthenticationException;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
@@ -31,6 +32,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => RoleMiddleware::class,
             'permission' => PermissionMiddleware::class,
             'role_or_permission' => RoleOrPermissionMiddleware::class,
+            'force.password.change' => ForcePasswordChange::class,
+            'account.active' => EnsureAccountIsActive::class
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

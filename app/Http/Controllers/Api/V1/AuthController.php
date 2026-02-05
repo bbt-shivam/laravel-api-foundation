@@ -41,7 +41,7 @@ class AuthController extends Controller
     public function changePassword(Request $request){
         $request->validate([
             'old_password' => ['required', 'current_password'],
-            'password' => ['required', 'string', 'min:6', 'confirmed'],
+            'password' => ['required', 'string', 'min:6', 'confirmed', 'different:old_password'],
         ]);
 
         $user = $request->user();
@@ -51,6 +51,13 @@ class AuthController extends Controller
         ]);
 
         $user->tokens()->delete();
+        if($user->must_change_password) {
+            $user->must_change_password = false;
+
+            $user->sendEmailVerificationNotification();
+
+            $user->save();
+        }
 
         return $this->success(null, "Password changed successfully. Please login again.", 200);
     }
