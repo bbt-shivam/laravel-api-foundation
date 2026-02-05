@@ -22,12 +22,14 @@ Route::prefix('v1')
         //authenticated routes
         Route::middleware('auth:sanctum')->group(function(){
             Route::get('/logout',[AuthController::class, 'logout']);
-            Route::get('/profile', [ProfileController::class, 'show']);
+            Route::get('/profile', [ProfileController::class, 'show'])
+                ->middleware(['force.password.change','account.active']);
             Route::post('/change-password', [AuthController::class, 'changePassword']);
             
             
             //admin routes
             Route::prefix('admin')
+            ->middleware(['force.password.change','account.active'])
             ->group(function() {
                     Route::post('/maintenance', [SettingController::class, 'toggleMaintenance'])
                         ->middleware('permission:edit-setting-maintenance');

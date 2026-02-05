@@ -8,11 +8,13 @@ trait ApiResponse{
     protected function success(
         mixed $data = null, 
         string $message = "Request completed successfully", 
-        int $status = 200
+        int $status = 200,
+        ?string $code = null
     ): JsonResponse {
         return response()->json([
             'error' => false,
             'message' => $message,
+            'code' => $code,
             'data' => $data
         ], $status);
     }
@@ -20,12 +22,14 @@ trait ApiResponse{
     protected function error(
         string $message = "Something went wrong!", 
         int $status = 200, 
-        mixed $errors = null
+        mixed $errors = null,
+        ?string $code = null
     ): JsonResponse {
         return response()->json([
             'error' => [
                 'status' => $status,
                 'message' => $message,
+                'code' => $code,
                 'errors' => $errors
             ]
         ], $status);
