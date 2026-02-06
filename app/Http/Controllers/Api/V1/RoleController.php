@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\V1\Roles\StoreRoleRequest;
+use App\Services\RoleAndPermissions\RoleService;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 
@@ -22,20 +24,10 @@ class RoleController extends Controller
         //
     }
 
-    public function store(Request $request)
+    public function store(StoreRoleRequest $request, RoleService $roleService)
     {
-        $request->validate([
-            'name' => 'required|unique:roles,name',
-            'permissions' => 'array',
-        ]);
-
-        $role = Role::create(['name' => $request->name, 'guard_name' => 'sanctum']);
-
-        if ($request->permissions) {
-            $role->syncPermissions($request->permissions);
-        }
-
-        return $this->success($role->load('permissions'), 'Role created.');
+        $role = $roleService->store($request->validated());
+        return $this->success($role, 'Role created.');
     }
 
     public function show(Role $role)

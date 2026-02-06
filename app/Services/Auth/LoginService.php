@@ -1,7 +1,9 @@
 <?php
 
 namespace App\Services\Auth;
+
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
@@ -21,11 +23,11 @@ class LoginService
 
         if ($user && $user->lock_until && now()->lessThan($user->lock_until)) {
             throw ValidationException::withMessages([
-                'email' => ['Account locked due to maximum failed attempt. Try again later.'],
+                'email' => ['Account locked. Try again later.'],
             ]);
         }
 
-        if (! $user || ! Hash::check($credentials['password'], $user->password)) {
+        if (! Auth::attempt($credentials)) {
             throw ValidationException::withMessages([
                 'email' => ['The provided credentials are incorrect.'],
             ]);

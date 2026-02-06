@@ -2,18 +2,23 @@
 
 namespace App\Providers;
 
-use App\Events\PasswordChanged;
-use App\Listeners\SendPasswordChangedEmail;
+use App\Listeners\LogLoginAttempt;
+use Illuminate\Auth\Events\Failed;
+use Illuminate\Auth\Events\Login;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
 {
-    // protected $listen = [
-    //     PasswordChanged::class => [
-    //         SendPasswordChangedEmail::class,
-    //     ],
-    // ];
+    protected $listen = [
+        Login::class => [
+            LogLoginAttempt::class,
+        ],
+        Failed::class => [
+            LogLoginAttempt::class
+        ],
+    ];
 
     public function boot(): void
     {}
+    
 }
