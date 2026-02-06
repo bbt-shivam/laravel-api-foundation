@@ -15,7 +15,7 @@ Route::prefix('v1')
     ->group(function () {
 
         // unauthenticated routes
-        Route::post('/login', [AuthController::class, 'login']);
+        Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1');
 
         // authenticated routes
         Route::middleware('auth:sanctum')->group(function () {

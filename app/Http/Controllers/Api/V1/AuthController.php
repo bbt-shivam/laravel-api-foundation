@@ -3,37 +3,25 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Http\Requests\Api\V1\Auth\ChangePasswordRequest;
+use App\Http\Requests\Api\V1\Auth\LoginRequest;
+use App\Http\Resources\V1\UserResource;
+use App\Mail\PasswordChangedMail;
+use App\Services\Auth\LoginService;
+use App\Services\Auth\PasswordService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
 {
-    public function login(Request $request)
+    public function login(LoginRequest $request, LoginService $loginService)
     {
-        $request->validate([
-            'email' => 'required|string|email',
-            'password' => 'required|string',
-        ]);
-
-        $user = User::where('email', $request->email)->first();
-
-        if ($user && $user->lock_until && now()->lessThan($user->lock_until)) {
-            return $this->error('Account locked due to maximum faileed attempt. Try again later.', 401, null, 'ACCOUNT_LOCKED');
-        }
-
-        if (! $user || ! Hash::check($request->password, $user->password)) {
-            return $this->error(
-                'The provided credentials are incorrect.',
-                401
-            );
-        }
-
-        $token = $user->createToken('auth_token')->plainTextToken;
+       $result = $loginService->login($request->validated());
 
         return $this->success([
-            'user' => $user,
-            'token' => $token,
+            'user' => new UserResource($result['user']),
+            'token' => $result['token']
         ], 'Login Successfull');
     }
 
@@ -44,28 +32,10 @@ class AuthController extends Controller
         return $this->success(null, 'Successfully logged out');
     }
 
-    public function changePassword(Request $request)
+    public function changePassword(ChangePasswordRequest $request, PasswordService $passwordService)
     {
-        $request->validate([
-            'old_password' => ['required', 'current_password'],
-            'password' => ['required', 'string', 'min:6', 'confirmed', 'different:old_password'],
-        ]);
-
-        $user = $request->user();
-
-        $user->update([
-            'password' => Hash::make($request->password),
-        ]);
-
-        $user->tokens()->delete();
-        if ($user->must_change_password) {
-            $user->must_change_password = false;
-
-            $user->sendEmailVerificationNotification();
-
-            $user->save();
-        }
-
+        $passwordService->changePassword($request->user(), $request->password);
+        
         return $this->success(null, 'Password changed successfully. Please login again.', 200);
     }
 }
