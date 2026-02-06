@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('url');
             $table->string('method');
             $table->ipAddress('ip_address')->nullable();
-            $table->json('payload')->nullable();
+            $table->text('payload')->nullable();
             $table->timestamps();
         });
     }

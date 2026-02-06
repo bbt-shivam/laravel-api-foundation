@@ -24,7 +24,7 @@ class LogUserActivity
                 'url' => $request->path(),
                 'method' => $request->method(),
                 'ip_address' => $request->ip(),
-                'payload' => $request->except(['password']),
+                'payload' => $request->except(['password'])
             ]);
         }
 
