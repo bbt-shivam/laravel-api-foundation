@@ -37,7 +37,6 @@ Route::prefix('v1')
 
                     Route::middleware('permission:access-users')->apiResource('/users', UserController::class);
                 });
-
         });
 
     });

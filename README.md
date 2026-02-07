@@ -12,6 +12,9 @@ This project uses modern Laravel tooling for testing, code style, static analysi
 
 ## 📋 Prerequisites
 
+Laravel 11 ✔️
+Laravel 12 ⏳ (planned)
+
 - PHP 8.1+
 - Composer
 - Node.js & npm
