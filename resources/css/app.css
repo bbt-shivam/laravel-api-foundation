@@ -1,7 +1,0 @@
-/* Bootstrap */
-@import "bootstrap/dist/css/bootstrap.min.css";
-
-/* Optional: your custom styles */
-body {
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-}
