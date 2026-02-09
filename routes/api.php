@@ -20,6 +20,7 @@ Route::prefix('v1')
         // authenticated routes
         Route::middleware('auth:sanctum')->group(function () {
             Route::get('/logout', [AuthController::class, 'logout']);
+            Route::get('/logout-all', [AuthController::class, 'logoutFromAllDevice']);
             Route::get('/profile', [ProfileController::class, 'show'])
                 ->middleware(['force.password.change', 'account.active']);
             Route::post('/change-password', [AuthController::class, 'changePassword']);
