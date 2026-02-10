@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use App\Mail\UserCredentialsMail;
+use App\Mail\User\UserCredentialsMail;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -16,9 +16,9 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::with('roles')->select('id', 'name', 'email')->where('id', '!=', auth()->id())->get();
+        $users = User::with('roles')->select('id', 'name', 'email')->where('id', '!=', $request->user()->id())->get();
 
         return $this->success(['users' => $users]);
     }

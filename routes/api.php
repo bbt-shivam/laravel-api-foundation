@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\Api\V1\EmailVerificationController;
 use App\Http\Controllers\Api\V1\PermissionController;
 use App\Http\Controllers\Api\V1\ProfileController;
 use App\Http\Controllers\Api\V1\RoleController;
@@ -15,12 +16,19 @@ Route::prefix('v1')
     ->group(function () {
 
         // unauthenticated routes
+        Route::post('/register', [AuthController::class, 'register']);
         Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:7,1');
+        Route::post('/forget-password',[AuthController::class, 'forgetPassword']);
+        Route::post('/reset-password/{token}',[AuthController::class, 'resetPassword']);
 
         // authenticated routes
         Route::middleware('auth:sanctum')->group(function () {
             Route::get('/logout', [AuthController::class, 'logout']);
             Route::get('/logout-all', [AuthController::class, 'logoutFromAllDevice']);
+
+            Route::get('/resend-email-verification', [EmailVerificationController::class, 'resendVerification']);
+            Route::get('/verify-email/{token}', [EmailVerificationController::class, 'verify']);
+            
             Route::get('/profile', [ProfileController::class, 'show'])
                 ->middleware(['force.password.change', 'account.active']);
             Route::post('/change-password', [AuthController::class, 'changePassword']);

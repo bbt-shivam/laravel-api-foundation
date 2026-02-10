@@ -47,6 +47,5 @@ class ApiRolePermissionSeeder extends Seeder
 
         $superAdmin->givePermissionTo(Permission::all());
         $admin->givePermissionTo(Permission::all());
-        $user->givePermissionTo('partial-edit-member');
     }
 }

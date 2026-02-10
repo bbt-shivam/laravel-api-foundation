@@ -1,11 +1,9 @@
 <?php
 
-namespace App\Listeners;
+namespace App\Listeners\Password;
 
-use App\Events\PasswordChanged;
-use App\Mail\PasswordChangedMail;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
+use App\Events\Password\PasswordChanged;
+use App\Mail\Auth\PasswordChangedMail;
 use Illuminate\Support\Facades\Mail;
 
 class SendPasswordChangedEmail

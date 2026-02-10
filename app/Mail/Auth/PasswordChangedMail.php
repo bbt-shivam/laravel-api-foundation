@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Mail;
+namespace App\Mail\Auth;
 
 use App\Models\User;
 use Illuminate\Bus\Queueable;
@@ -28,7 +28,7 @@ class PasswordChangedMail extends Mailable implements ShouldQueue
     public function content(): Content
     {
         return new Content(
-            view: 'emails.password-changed',
+            view: 'emails.password_changed',
         );
     }
 

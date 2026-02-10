@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Listeners\LogLoginAttempt;
+use App\Listeners\Auth\LogLoginAttempt;
 use Illuminate\Auth\Events\Failed;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;

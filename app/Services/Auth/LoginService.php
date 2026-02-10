@@ -27,6 +27,8 @@ class LoginService
             ]);
         }
 
+        $user->load('roles');
+
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return [

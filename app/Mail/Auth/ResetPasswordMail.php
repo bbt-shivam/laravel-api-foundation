@@ -1,28 +1,27 @@
 <?php
 
-namespace App\Mail;
+namespace App\Mail\Auth;
 
+use App\Models\User;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class UserCredentialsMail extends Mailable
+class ResetPasswordMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
-    public string $email;
-
-    public string $password;
+    public string $resetPasswordUrl;
 
     /**
      * Create a new message instance.
      */
-    public function __construct($email, $password)
+    public function __construct(public User $user, public string $token)
     {
-        $this->email = $email;
-        $this->password = $password;
+        $this->resetPasswordUrl = config('app.frontend_url') . '/reset-password/' . $token;
     }
 
     /**
@@ -31,7 +30,7 @@ class UserCredentialsMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Your Account Credentials',
+            subject: 'Reset your password',
         );
     }
 
@@ -41,10 +40,9 @@ class UserCredentialsMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'email.user_credentials',
+            view: 'emails.reset_password',
             with: [
-                'email' => $this->email,
-                'password' => $this->password,
+                'reset_password_url' => $this->resetPasswordUrl
             ]
         );
     }
