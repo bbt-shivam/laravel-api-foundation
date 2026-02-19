@@ -15,18 +15,21 @@ class ApiRolePermissionSeeder extends Seeder
         $permissions = [
 
             // Roles
+            'roles.list',
             'roles.view',
             'roles.create',
             'roles.update',
             'roles.delete',
 
             // Permissions
+            'permissions.list',
             'permissions.view',
             'permissions.create',
             'permissions.update',
             'permissions.delete',
 
             // Settings
+            'settings.list',
             'settings.view',
             'settings.contact.update',
             'settings.copyright.update',
@@ -34,6 +37,7 @@ class ApiRolePermissionSeeder extends Seeder
             'settings.maintenance.update',
 
             // Users
+            'users.list',
             'users.view',
             'users.create',
             'users.update',
@@ -72,6 +76,7 @@ class ApiRolePermissionSeeder extends Seeder
         $superAdmin->givePermissionTo($allPermissions);
 
         $admin->syncPermissions([
+            'roles.list',
             'roles.view',
             'roles.create',
             'roles.update',
@@ -83,6 +88,7 @@ class ApiRolePermissionSeeder extends Seeder
             'settings.logo.update',
             'settings.maintenance.update',
 
+            'users.list',
             'users.view',
             'users.create',
             'users.update',
