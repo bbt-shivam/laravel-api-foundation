@@ -13,11 +13,6 @@ class PermissionController extends Controller
         return $this->success(Permission::all());
     }
 
-    public function create()
-    {
-        //
-    }
-
     public function store(Request $request)
     {
         $request->validate([
@@ -29,16 +24,6 @@ class PermissionController extends Controller
         ]);
 
         return $this->success(['permission' => $permission], 'Permission created.');
-    }
-
-    public function show(string $id)
-    {
-        //
-    }
-
-    public function edit(string $id)
-    {
-        //
     }
 
     public function update(Request $request, Permission $permission)

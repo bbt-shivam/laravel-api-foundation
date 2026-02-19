@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\V1\Roles\DeleteRoleRequest;
 use App\Http\Requests\Api\V1\Roles\StoreRoleRequest;
 use App\Services\RoleAndPermissions\RoleService;
 use Illuminate\Http\Request;
@@ -19,11 +20,6 @@ class RoleController extends Controller
         }
     }
 
-    public function create()
-    {
-        //
-    }
-
     public function store(StoreRoleRequest $request, RoleService $roleService)
     {
         $role = $roleService->store($request->validated());
@@ -33,11 +29,6 @@ class RoleController extends Controller
     public function show(Role $role)
     {
         return $this->success($role->load('permissions'));
-    }
-
-    public function edit(string $id)
-    {
-        //
     }
 
     public function update(Request $request, Role $role)
@@ -58,10 +49,9 @@ class RoleController extends Controller
         return $this->success(['role' => $role->load('permissions')], 'Role updated.');
     }
 
-    public function destroy(Role $role)
+    public function destroy(DeleteRoleRequest $request, Role $role)
     {
         $role->delete();
-
         return $this->success(null, 'Role deleted');
     }
 }

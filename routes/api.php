@@ -29,7 +29,7 @@ Route::prefix('v1')
             Route::get('/resend-email-verification', [EmailVerificationController::class, 'resendVerification']);
             Route::get('/verify-email/{token}', [EmailVerificationController::class, 'verify']);
             
-            Route::get('/profile', [ProfileController::class, 'show'])
+            Route::get('/me', [ProfileController::class, 'show'])
                 ->middleware(['force.password.change', 'account.active']);
             Route::post('/change-password', [AuthController::class, 'changePassword']);
 
@@ -38,13 +38,13 @@ Route::prefix('v1')
                 ->middleware(['force.password.change', 'account.active'])
                 ->group(function () {
                     Route::post('/maintenance', [SettingController::class, 'toggleMaintenance'])
-                        ->middleware('permission:edit-setting-maintenance');
+                        ->middleware('permission:settings.maintenance.update');
 
-                    Route::middleware('permission:access-roles')->apiResource('roles', RoleController::class);
-                    Route::middleware('permission:access-permissions')->apiResource('permissions', PermissionController::class)
+                    Route::middleware('permission:roles.view')->apiResource('roles', RoleController::class);
+                    Route::middleware('permission:permissions.view')->apiResource('permissions', PermissionController::class)
                         ->except(['show']);
 
-                    Route::middleware('permission:access-users')->apiResource('/users', UserController::class);
+                    Route::middleware('permission:users.view')->apiResource('/users', UserController::class);
                 });
         });
 

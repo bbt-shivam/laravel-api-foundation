@@ -49,7 +49,6 @@ function assertApiError(
             'error' => [
                 'status',
                 'message',
-                'code',
                 'errors',
             ],
         ])

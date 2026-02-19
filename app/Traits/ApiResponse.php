@@ -14,6 +14,7 @@ trait ApiResponse
     ): JsonResponse {
         return response()->json([
             'error' => false,
+            'status' => $status,
             'message' => $message,
             'code' => $code,
             'data' => $data,

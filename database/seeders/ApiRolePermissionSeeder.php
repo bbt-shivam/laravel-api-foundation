@@ -10,42 +10,83 @@ class ApiRolePermissionSeeder extends Seeder
 {
     public function run(): void
     {
+        $guard = 'sanctum';
+
         $permissions = [
 
-            'access-roles',
-            'create-role',
-            'edit-role',
-            'delete-role',
-            'access-permission',
-            'create-permission',
-            'edit-permmission',
-            'delete-permission',
+            // Roles
+            'roles.view',
+            'roles.create',
+            'roles.update',
+            'roles.delete',
 
-            'access-settings',
-            'edit-setting-contact-details',
-            'edit-setting-copyright-text',
-            'edit-logo',
-            'edit-setting-maintenance',
+            // Permissions
+            'permissions.view',
+            'permissions.create',
+            'permissions.update',
+            'permissions.delete',
 
-            'access-users',
-            'create-user',
-            'edit-user',
-            'list-user',
-            'delete-user',
+            // Settings
+            'settings.view',
+            'settings.contact.update',
+            'settings.copyright.update',
+            'settings.logo.update',
+            'settings.maintenance.update',
 
+            // Users
+            'users.view',
+            'users.create',
+            'users.update',
+            'users.delete',
         ];
 
         foreach ($permissions as $permission) {
-            Permission::firstOrCreate(
-                ['name' => $permission, 'guard_name' => 'sanctum']
-            );
+            Permission::firstOrCreate([
+                'name' => $permission,
+                'guard_name' => $guard,
+                'is_system' => true,
+            ]);
         }
 
-        $superAdmin = Role::firstOrCreate(['name' => 'super-admin', 'guard_name' => 'sanctum']);
-        $admin = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'sanctum']);
-        $user = Role::firstOrCreate(['name' => 'user', 'guard_name' => 'sanctum']);
+        // Roles
+        $superAdmin = Role::firstOrCreate([
+            'name' => 'super-admin',
+            'guard_name' => $guard,
+            'is_system' => true,
+        ]);
 
-        $superAdmin->givePermissionTo(Permission::all());
-        $admin->givePermissionTo(Permission::all());
+        $admin = Role::firstOrCreate([
+            'name' => 'admin',
+            'guard_name' => $guard,
+            'is_system' => true,
+        ]);
+
+        $user = Role::firstOrCreate([
+            'name' => 'user',
+            'guard_name' => $guard,
+            'is_system' => true,
+        ]);
+
+        $allPermissions = Permission::pluck('name')->toArray();
+
+        $superAdmin->givePermissionTo($allPermissions);
+
+        $admin->syncPermissions([
+            'roles.view',
+            'roles.create',
+            'roles.update',
+            'roles.delete',
+
+            'settings.view',
+            'settings.contact.update',
+            'settings.copyright.update',
+            'settings.logo.update',
+            'settings.maintenance.update',
+
+            'users.view',
+            'users.create',
+            'users.update',
+            'users.delete',
+        ]);
     }
 }

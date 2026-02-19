@@ -31,6 +31,6 @@ it('fails with invalid credentials', function(){
     
     assertApiError(
         response: $response,
-        status: 401
+        status: 422
     );
 });

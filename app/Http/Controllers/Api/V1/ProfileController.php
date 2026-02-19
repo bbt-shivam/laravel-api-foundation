@@ -9,6 +9,8 @@ class ProfileController extends Controller
 {
     public function show(Request $request)
     {
-        return $this->success($request->user());
+        return $this->success($request->user()->load([
+            'roles','permissions'
+        ]));
     }
 }
